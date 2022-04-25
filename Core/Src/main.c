@@ -26,6 +26,7 @@
 #include "uart_handler.h"
 #include "stateManagement.h"
 #include "output.h"
+//#include "lcd2.h"
 #include "lcd.h"
 /* USER CODE END Includes */
 
@@ -153,8 +154,11 @@ int main(void)
   MX_TIM4_Init();
   MX_DAC1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim3);
   LCD_init();
+  LCD_Clear();
+  LCD_Set_Cursor(1,1);
+  LCD_Write_String("Hello World\0");
+  HAL_TIM_Base_Start_IT(&htim3);
   initState();
   /* USER CODE END 2 */
 

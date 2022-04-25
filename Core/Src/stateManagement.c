@@ -8,7 +8,7 @@
 
 void initState() {
 	state = STATE_MEAS_DV;
-	outputState = STATE_OUTPUT_ON; // needs to be off
+	outputState = STATE_OUTPUT_OFF; // needs to be off
 	outputType = STATE_OUTPUT_TYPE_DC;
 }
 

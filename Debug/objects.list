@@ -1,4 +1,5 @@
 "Core/Src/lcd.o"
+"Core/Src/lcd2.o"
 "Core/Src/main.o"
 "Core/Src/measurements.o"
 "Core/Src/output.o"

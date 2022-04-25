@@ -7,6 +7,14 @@
 
 #include "main.h"
 
+// for debugging:
+extern UART_HandleTypeDef huart2;
+
 void LCD_DATA(unsigned char Data);
 void LCD_CMD(unsigned char CMD);
 void LCD_init();
+void LCD_Write_Char(char Data);
+void LCD_Write_String(char *str);
+void LCD_Clear();
+void LCD_Set_Cursor(unsigned char r, unsigned char c);
+
