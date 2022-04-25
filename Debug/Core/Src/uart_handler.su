@@ -1,0 +1,5 @@
+uart_handler.c:11:8:isValidMsg	32	static
+uart_handler.c:24:6:clearBuffer	8	static
+uart_handler.c:30:6:decodeMsg	40	static
+uart_handler.c:150:6:msgProcessing	8	static
+uart_handler.c:154:6:HAL_UART_RxCpltCallback	16	static

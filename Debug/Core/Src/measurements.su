@@ -1,0 +1,4 @@
+measurements.c:10:6:sampleADC	8	static
+measurements.c:20:10:measureAmplitude	80	dynamic
+measurements.c:56:10:measureDCOffset	24	static
+measurements.c:66:10:measureFrequency	72	dynamic

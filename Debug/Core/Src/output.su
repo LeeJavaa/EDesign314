@@ -1,0 +1,8 @@
+output.c:30:9:getValue	24	static
+output.c:37:9:calibrate	32	static
+output.c:43:6:updateOffset	16	static
+output.c:53:6:updateAmplitude	16	static
+output.c:58:6:updateFrequency	16	static
+output.c:63:6:dcOut	24	static
+output.c:86:6:calcSin	24	static
+output.c:111:6:acOut	16	static

@@ -1,0 +1,6 @@
+stateManagement.c:9:6:initState	4	static
+stateManagement.c:15:6:setState	16	static
+stateManagement.c:26:6:setOutType	16	static
+stateManagement.c:34:6:setOutState	16	static
+stateManagement.c:42:13:stateToString	4	static
+stateManagement.c:65:13:outTypeToString	4	static
