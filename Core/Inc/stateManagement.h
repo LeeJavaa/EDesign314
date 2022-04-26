@@ -19,17 +19,27 @@
 #define STATE_OUTPUT_TYPE_DC 1
 #define STATE_OUTPUT_TYPE_SINUSOIDAL 2
 #define STATE_OUTPUT_TYPE_PULSE 3
+#define STATE_MEAS_PARAM_T 1
+#define STATE_MEAS_PARAM_A 2
+#define STATE_MEAS_PARAM_O 3
+#define STATE_MEAS_PARAM_F 4
+#define STATE_MEAS_PARAM_D 5
+#define STATE_MEAS_PARAM_C 6
 
 
 uint8_t state;
 uint8_t outputState;
 uint8_t outputType;
+uint8_t measurementParameter;
 
 void setState(uint8_t newState);
 void setOutType(uint8_t newOutType);
 void setOutState(uint8_t newOutState);
+void setMeasParam(uint8_t newMeasParam);
 const char* stateToString();
-const char* outTypeToString();
+uint8_t outTypeToString();
+uint8_t outputToString();
+uint8_t measParamToString();
 void initState();
 
 

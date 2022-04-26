@@ -1,5 +1,5 @@
-Core/Src/lcd2.o: ../Core/Src/lcd2.c ../Core/Inc/lcd2.h \
- ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
+Core/Src/uart_lise.o: ../Core/Src/uart_lise.c ../Core/Inc/uart_lise.h \
+ ../Core/Inc/main.h ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
  ../Core/Inc/stm32f3xx_hal_conf.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h \
@@ -33,9 +33,11 @@ Core/Src/lcd2.o: ../Core/Src/lcd2.c ../Core/Inc/lcd2.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim_ex.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h \
- ../Core/Inc/main.h
+ ../Core/Inc/stateManagement.h ../Core/Inc/measurements.h
 
-../Core/Inc/lcd2.h:
+../Core/Inc/uart_lise.h:
+
+../Core/Inc/main.h:
 
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:
 
@@ -105,4 +107,6 @@ Core/Src/lcd2.o: ../Core/Src/lcd2.c ../Core/Inc/lcd2.h \
 
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h:
 
-../Core/Inc/main.h:
+../Core/Inc/stateManagement.h:
+
+../Core/Inc/measurements.h:

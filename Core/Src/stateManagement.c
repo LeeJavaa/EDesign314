@@ -8,7 +8,7 @@
 
 void initState() {
 	state = STATE_MEAS_DV;
-	outputState = STATE_OUTPUT_OFF; // needs to be off
+	outputState = STATE_OUTPUT_OFF;
 	outputType = STATE_OUTPUT_TYPE_DC;
 }
 
@@ -39,6 +39,14 @@ void setOutState(uint8_t newOutState)
 	}
 }
 
+void setMeasParam(uint8_t newMeasParam)
+{
+	if (newMeasParam >= 1 && newMeasParam <=6)
+	{
+		measurementParameter = newMeasParam;
+	}
+}
+
 const char* stateToString()
 {
 	switch (state)
@@ -62,20 +70,60 @@ const char* stateToString()
 	return "";
 }
 
-const char* outTypeToString()
+uint8_t outTypeToString()
 {
 	switch (outputType)
 	{
 	case 1:
-		return "d";
+		return (uint8_t) 'd';
 		break;
 	case 2:
-		return "s";
+		return (uint8_t) 's';
 		break;
 	case 3:
-		return "p";
+		return (uint8_t) 'p';
 		break;
 	}
-	return "";
+	return (uint8_t) 'E';
+}
+
+uint8_t outputToString()
+{
+	switch (outputState)
+	{
+	case 0:
+		return (uint8_t) '0';
+		break;
+	case 1:
+		return (uint8_t) '1';
+		break;
+	}
+	return (uint8_t) 'E';
+}
+
+uint8_t measParamToString()
+{
+	switch (state)
+	{
+	case 1:
+		return (uint8_t) 't';
+		break;
+	case 2:
+		return (uint8_t) 'a';
+		break;
+	case 3:
+		return (uint8_t) 'o';
+		break;
+	case 4:
+		return (uint8_t) 'f';
+		break;
+	case 5:
+		return (uint8_t) 'd';
+		break;
+	case 6:
+		return (uint8_t) 'c';
+		break;
+	}
+	return (uint8_t) 'E';
 }
 

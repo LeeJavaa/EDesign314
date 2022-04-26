@@ -7,6 +7,8 @@
 
 #include "main.h"
 #include "stateManagement.h"
+#include <stdlib.h>
+#include "math.h"
 
 #define SIN_BUFFER_SIZE 10000
 

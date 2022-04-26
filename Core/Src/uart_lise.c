@@ -1,0 +1,149 @@
+/*
+ * uart_handler.c
+ *
+ *  Created on: 06 Mar 2022
+ *      Author: Lise Prinsloo 23726059
+ */
+
+#include "uart_lise.h"
+
+// Initializations
+uint8_t status_message[] = "@,**,*,*,!\n" ;
+uint8_t measure_message[] = "@,m,*,****,!\n";
+uint8_t mes_mode[2] = "DV";
+
+uint16_t measAmplitude = 0;
+uint16_t measOffset = 0;
+uint16_t measFrequency = 0;
+
+void process_input(){
+	  //process input message and set appropriate modes
+	if(input_message[2] == '$'){
+		// "Set Measure Mode"
+		if((input_message[4]=='D')&&(input_message[5]=='V')){
+			// Set measurement to DC Voltage
+			mes_mode[0]= 'D';
+			mes_mode[1] = 'V';
+			setState(STATE_MEAS_DV);
+		}else if((input_message[4]=='A')&&(input_message[5]=='V')){
+			// Set measurement to AC Voltage
+			mes_mode[0]= 'A';
+			mes_mode[1] = 'V';
+			setState(STATE_MEAS_AV);
+		}else if((input_message[4]=='D')&&(input_message[5]=='I')){
+			// Set measurement to DC Current
+			mes_mode[0]= 'D';
+			mes_mode[1] = 'I';
+			setState(STATE_MEAS_DI);
+		}else if((input_message[4]=='A')&&(input_message[5]=='I')){
+			// Set measurement to AC current
+			mes_mode[0]= 'A';
+			mes_mode[1] = 'I';
+			setState(STATE_MEAS_AI);
+		}else if((input_message[4]=='T')&&(input_message[5]=='C')){
+			// Set measurement to temperature
+			mes_mode[0]= 'T';
+			mes_mode[1] = 'C';
+			setState(STATE_MEAS_TC);
+		}
+	}
+
+	if(input_message[2] == '*'){
+		// Request
+		if(input_message[4]=='s'){
+			// Request Status
+			if(input_message[6]=='0'){
+				// Set output state to 0
+				setOutState(STATE_OUTPUT_OFF);
+			} else{
+				// Set output state to 1
+				setOutState(STATE_OUTPUT_ON);
+			}
+			send_status = 1 ;
+		} else if(input_message[4]=='m'){
+			// Request measurement mode
+			send_measure = 1;
+			if(input_message[6]=='t'){
+				// Requesting "type"
+				setMeasParam(STATE_MEAS_PARAM_T);
+			}else if(input_message[6]=='a'){
+				// Requesting "amplitude"
+				setMeasParam(STATE_MEAS_PARAM_A);
+			}else if(input_message[6]=='o'){
+				// Requesting "offset"
+				setMeasParam(STATE_MEAS_PARAM_O);
+			}else if(input_message[6]=='f'){
+				// Requesting "frequency"
+				setMeasParam(STATE_MEAS_PARAM_F);
+			}else if(input_message[6]=='d'){
+				// Requesting "duty cycle"
+				setMeasParam(STATE_MEAS_PARAM_D);
+			}else if(input_message[6]=='c'){
+				// Requesting "temperature"
+				setMeasParam(STATE_MEAS_PARAM_C);
+			}
+		}
+
+	}
+
+
+}
+
+void sendMeasure(){
+	// Send Measurement message
+	if(state == STATE_MEAS_DV){
+		// If DC: Only need to measure amplitude
+		measAmplitude = measureAmplitude();
+		measure_message[4]= 'a';
+		measure_message[6]= (measAmplitude/1000)%10 + 48 ;
+		measure_message[7]= (measAmplitude/100)%10 + 48 ;
+		measure_message[8]= (measAmplitude/10)%10 + 48 ;
+		measure_message[9]= (measAmplitude/1)%10 + 48 ;
+	} else if(state == STATE_MEAS_AV){
+		// If AC: Need to measure Amplitude, DC Offset and Frequency
+		measure_message[4]= measParamToString();
+		switch (measurementParameter) {
+			case STATE_MEAS_PARAM_A:
+				// Amplitude measurement
+				measAmplitude = measureAmplitude();
+				measure_message[6]= (measAmplitude/1000)%10 + 48 ;
+				measure_message[7]= (measAmplitude/100)%10 + 48 ;
+				measure_message[8]= (measAmplitude/10)%10 + 48 ;
+				measure_message[9]= (measAmplitude/1)%10 + 48 ;
+				break;
+			case STATE_MEAS_PARAM_O:
+				// Offset measurement
+				measOffset = measureDCOffset();
+				measure_message[6]= (measOffset/1000)%10 + 48 ;
+				measure_message[7]= (measOffset/100)%10 + 48 ;
+				measure_message[8]= (measOffset/10)%10 + 48 ;
+				measure_message[9]= (measOffset/1)%10 + 48 ;
+				break;
+			case STATE_MEAS_PARAM_F:
+				// Frequency measurement
+				measFrequency = measureFrequency();
+				measure_message[6]= (measFrequency/1000)%10 + 48 ;
+				measure_message[7]= (measFrequency/100)%10 + 48 ;
+				measure_message[8]= (measFrequency/10)%10 + 48 ;
+				measure_message[9]= (measFrequency/1)%10 + 48 ;
+				break;
+			default:
+				break;
+		}
+	}
+
+	HAL_UART_Transmit(&huart2, measure_message ,13,50);
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+
+	if (rxData[0] != 10){
+		input_message[input_length] = rxData[0];
+		input_length ++ ;
+	} else{
+		input_length = 0;
+		input_complete = 1;
+	}
+
+	HAL_UART_Receive_IT(&huart2,rxData,1);
+}
