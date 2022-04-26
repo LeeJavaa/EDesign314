@@ -72,7 +72,7 @@ void LCD_Write_Char(char Data){
 	Low4 = Data & 0x0F;
 	High4 = Data & 0xF0;
 	// RS = 1 = Data mode
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
 	LCD_DATA(High4>>4); // Shifting the upper 4 bits of the byte to a nibble so that the data can be send
 	// EN = 1
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
