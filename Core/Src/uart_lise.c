@@ -20,7 +20,6 @@ void process_input(){
 	  //process input message and set appropriate modes
 	if(input_message[2] == '$'){
 		// "Set Measure Mode"
-//		LCD_Write_String("Set Measurement Mode");
 		if((input_message[4]=='D')&&(input_message[5]=='V')){
 			// Set measurement to DC Voltage
 			mes_mode[0]= 'D';
@@ -90,13 +89,69 @@ void process_input(){
 	if (input_message[2] == '#')
 	{
 		// Display on LCD
-		if(input_message[4] == '0')
+		if(input_message[4] == '1')
 		{
-			// Display data
-			;
+			// Display characters
+			if(LCDState != STATE_LCD_CHAR)
+			{
+				LCD_Clear(); // Clear LCD before writing characters
+				setLCDState(STATE_LCD_CHAR);
+			}
+			LCD_Write_Char(input_message[6]);
 		} else{
 			// Execute commands
-			;
+			setLCDState(STATE_LCD_CMD);
+			// Do not clear screen before commands are executed
+
+			uint8_t byte = input_message[6];
+			char Low4, High4;
+			Low4 = byte & 0x0F; // Extract only the lower 4 bits of the sent byte
+			High4 = byte & 0xF0; // Extract only the upper 4 bits of the sent byte
+
+			LCD_CMD((High4>>4)); // Send the first 4 bits to the LCD
+			LCD_CMD(Low4); // Send the second 4 bits to the LCD
+
+			HAL_Delay(3); // Maximum delay needed for the LCD commands (Clear Screen -> 2.16ms at fosc = 190KHz)
+		}
+	}
+
+	if(input_message[2] == '^')
+	{
+		// Setting output parameter
+		// @,^,param,value,!\n
+		// param = t, a, o, f
+		// value = (d, s), (0-9999 mV), (0-9999 mV), (0-9999 Hz)
+
+		if(input_message[4] == 't'){
+			// Set output type
+			if(input_message[6] == 'd'){
+				// DC
+				setOutType(STATE_OUTPUT_TYPE_DC);
+			} else if(input_message[6] == 's'){
+				// AC
+				setOutType(STATE_OUTPUT_TYPE_SINUSOIDAL);
+			} else{
+				// Pulse
+				setOutType(STATE_OUTPUT_TYPE_PULSE);
+			}
+		} else if(input_message[4] == 'a'){
+			// Set output amplitude
+			strncpy((char*) paramValue, (char*) input_message + 6, 4);
+			uint16_t newAmp = getValue(paramValue);
+			updateAmplitude(newAmp);
+			HAL_UART_Transmit(&huart2, paramValue, 4, 50);
+		} else if(input_message[4] == 'o'){
+			// Set output offset
+			strncpy((char*) paramValue, (char*) input_message + 6, 4);
+			uint16_t newOff = getValue(paramValue);
+			updateOffset(newOff);
+			HAL_UART_Transmit(&huart2, paramValue, 4, 50);
+		} else if(input_message[4] == 'f'){
+			// Set output frequency
+			strncpy((char*) paramValue, (char*) input_message + 6, 4);
+			uint16_t newFreq = getValue(paramValue);
+			updateFrequency(newFreq);
+			HAL_UART_Transmit(&huart2, paramValue, 4, 50);
 		}
 	}
 

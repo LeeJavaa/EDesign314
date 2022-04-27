@@ -6,6 +6,7 @@
  */
 
 #include "main.h"
+#include "stateManagement.h"
 
 // for debugging:
 extern UART_HandleTypeDef huart2;
@@ -17,4 +18,6 @@ void LCD_Write_Char(char Data);
 void LCD_Write_String(char *str);
 void LCD_Clear();
 void LCD_Set_Cursor(unsigned char r, unsigned char c);
-
+void menuView();
+void displayView();
+void menuInit();

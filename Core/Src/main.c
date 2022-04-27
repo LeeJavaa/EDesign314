@@ -25,7 +25,7 @@
 /* USER CODE BEGIN Includes */
 #include "uart_lise.h"
 #include "stateManagement.h"
-//#include "output.h"
+#include "output.h"
 #include "lcd.h"
 /* USER CODE END Includes */
 
@@ -47,23 +47,29 @@
 ADC_HandleTypeDef hadc1;
 
 DAC_HandleTypeDef hdac1;
+DMA_HandleTypeDef hdma_dac1_ch1;
 
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint8_t buttonState =1;
+uint8_t buttonState = 1;
+uint8_t toggle_menu = 0;
+uint32_t dcVal[100];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM2_Init(void);
+static void MX_TIM4_Init(void);
 static void MX_DAC1_Init(void);
 /* USER CODE BEGIN PFP */
 
@@ -94,8 +100,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		if ((GPIOA->IDR & 0b1<<1) == 0)
 		{
 			HAL_TIM_Base_Stop_IT(&htim2);
-			GPIOA->ODR = GPIOA->ODR ^ (0b1<<8);
-			setState(STATE_MENU_DISPLAY);
+			GPIOA->ODR = GPIOA->ODR ^ (0b1<<8); // if low make high, if high make low
+			toggle_menu = 1;
 			buttonState =1;
 		}
 
@@ -104,13 +110,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if (htim == &htim3) {
 		sampleADC();
 	}
-	/* NOTE : This function should not be modified, when the callback is needed,
-	 the HAL_TIM_PeriodElapsedCallback could be implemented in the user file
-	 */
 }
-
-//float value = 0.2;
-//uint32_t var;
 
 /* USER CODE END 0 */
 
@@ -142,19 +142,24 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
   MX_USART2_UART_Init();
   MX_TIM3_Init();
   MX_TIM2_Init();
+  MX_TIM4_Init();
   MX_DAC1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim3);
+  HAL_TIM_Base_Start(&htim4);
   initState();
   LCD_init();
   LCD_Clear();
-  LCD_Write_String("Daanyaal fuck you\0");
-  LCD_Set_Cursor(2, 1);
-  LCD_Write_String("Cammy <3");
+  menuInit();
+  // Commented out for menu initialization:
+//  LCD_Write_String("Lee Johnson");
+//  LCD_Set_Cursor(2,1);
+//  LCD_Write_String("24058661");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -162,6 +167,16 @@ int main(void)
   HAL_UART_Transmit(&huart2, (uint8_t*) "@,24058661,!,\n", 14, 10);
   HAL_UART_Receive_IT(&huart2, rxData, 1);
 	while (1) {
+
+		if(toggle_menu){
+			// Do we have to toggle between menu and display state?
+			if(LCDState == STATE_LCD_MENU){
+				setLCDState(STATE_LCD_DISPLAY);
+			} else {
+				setLCDState(STATE_LCD_MENU);
+			}
+			toggle_menu = 0;
+		}
 
 		if(input_complete){
 			// If we have dealt with out UART received data in the callback function
@@ -189,9 +204,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//		dcOut();
-//		calcSin();
-//		acOut();
+		dcOut();
+		calcSin();
+		acOut();
 	}
   /* USER CODE END 3 */
 }
@@ -333,7 +348,7 @@ static void MX_DAC1_Init(void)
   }
   /** DAC channel OUT1 config 
   */
-  sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
+  sConfig.DAC_Trigger = DAC_TRIGGER_T4_TRGO;
   sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
   if (HAL_DAC_ConfigChannel(&hdac1, &sConfig, DAC_CHANNEL_1) != HAL_OK)
   {
@@ -450,6 +465,51 @@ static void MX_TIM3_Init(void)
 }
 
 /**
+  * @brief TIM4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM4_Init(void)
+{
+
+  /* USER CODE BEGIN TIM4_Init 0 */
+
+  /* USER CODE END TIM4_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM4_Init 1 */
+
+  /* USER CODE END TIM4_Init 1 */
+  htim4.Instance = TIM4;
+  htim4.Init.Prescaler = 72-1;
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 100-1;
+  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM4_Init 2 */
+
+  /* USER CODE END TIM4_Init 2 */
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -481,6 +541,22 @@ static void MX_USART2_UART_Init(void)
   /* USER CODE BEGIN USART2_Init 2 */
 
   /* USER CODE END USART2_Init 2 */
+
+}
+
+/** 
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void) 
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Channel3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
 
 }
 

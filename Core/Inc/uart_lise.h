@@ -10,6 +10,8 @@
 #include "stateManagement.h"
 #include "measurements.h"
 #include "lcd.h"
+#include "output.h"
+#include <string.h>
 
 extern UART_HandleTypeDef huart2;
 
@@ -19,6 +21,7 @@ uint8_t mes_mode[2]; // Two element  buffer including the current measurement mo
 uint8_t status_message[11]; // Message sent if status is requested
 uint8_t measure_message[13]; // Message sent if measurement is requested
 uint8_t rxData[1];
+uint8_t paramValue[4];
 
 // Buffer offsets
 uint8_t input_length;

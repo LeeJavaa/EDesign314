@@ -11,11 +11,13 @@
 #include "math.h"
 
 #define SIN_BUFFER_SIZE 10000
+#define DC_BUFFER_SIZE 100
 
 extern DAC_HandleTypeDef hdac1;
 extern DMA_HandleTypeDef hdma_dac1_ch1;
 
 uint32_t sinBuffer[SIN_BUFFER_SIZE];
+uint32_t dc_val[DC_BUFFER_SIZE];
 
 uint16_t sinBufferChanged;
 uint16_t sinOutputOn;
@@ -29,6 +31,7 @@ uint16_t frequency;
 uint32_t outputDCOffset;
 uint32_t outputACOffset;
 uint32_t outputAmplitude;
+uint32_t outputFrequency;
 
 int16_t getValue(char *stringValue);
 int32_t calibrate(uint32_t sample);

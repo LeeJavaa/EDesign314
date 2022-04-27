@@ -19,6 +19,7 @@ uint16_t frequency = 1000; // Hz
 uint32_t outputDCOffset = 0;
 uint32_t outputACOffset = 0;
 uint32_t outputAmplitude = 0;
+uint32_t outputFrequency = 0;
 
 uint16_t sinBufferChanged = 0;
 uint16_t offsetChanged = 0;
@@ -60,7 +61,7 @@ void updateFrequency(uint16_t newFrequency) {
 
 void dcOut() {
 	// DC output
-	if(outputState == STATE_OUTPUT_TYPE_DC && outputState == STATE_OUTPUT_ON){
+	if(outputType == STATE_OUTPUT_TYPE_DC && outputState == STATE_OUTPUT_ON){
 		if(sinOutputOn == 1){
 			HAL_DAC_Stop_DMA(&hdac1, DAC1_CHANNEL_1);
 			sinOutputOn = 0;
@@ -68,13 +69,12 @@ void dcOut() {
 		if(dcOutputOn == 0 || offsetChanged == 1){
 			uint32_t sample = (uint32_t) (dcOffset*4096)/(3.3*1000);
 			uint32_t calSample = calibrate(sample);
-			HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, calSample);
+			for (int i = 0; i < 100; i++){
+				  dc_val[i] = calSample;
+			}
+			HAL_DAC_Start_DMA(&hdac1, DAC1_CHANNEL_1, dc_val, 100, DAC_ALIGN_12B_R);
 			dcOutputOn = 1;
 		}
-
-
-
-
 		// do edge case checks for sample
 		// do sample calibration
 	}
@@ -97,9 +97,15 @@ void calcSin() {
 		changedParam = 1;
 	}
 
+	if(outputFrequency != frequency){
+		// the amplitude has been changed
+		outputFrequency = frequency; // Not divided by 1000 as already in Hz
+		changedParam = 1;
+	}
+
 	if(changedParam == 1){
 		for (int i = 0; i < SIN_BUFFER_SIZE; i++){
-			sinBuffer[i] = calibrate(outputAmplitude*((sin(i*2*PI/SIN_BUFFER_SIZE) + 1)*(4096/2)) + outputACOffset);
+			sinBuffer[i] = calibrate(outputAmplitude*((sin(i*2*PI/(10000/outputFrequency)) + 1)*(4096/2)) + outputACOffset);
 		}
 		sinBufferChanged = 1;
 		changedParam = 0;

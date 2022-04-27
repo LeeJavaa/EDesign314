@@ -1,3 +1,3 @@
-uart_lise.c:19:6:process_input	8	static
-uart_lise.c:106:6:sendMeasure	8	static
-uart_lise.c:152:6:HAL_UART_RxCpltCallback	16	static
+uart_lise.c:19:6:process_input	24	static
+uart_lise.c:161:6:sendMeasure	8	static
+uart_lise.c:207:6:HAL_UART_RxCpltCallback	16	static

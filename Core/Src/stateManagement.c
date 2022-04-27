@@ -13,12 +13,9 @@ void initState() {
 }
 
 void setState(uint8_t newState) {
-	if (newState > 0 && newState <=6)
+	if (newState > 0 && newState <=5)
 	{
-		if (newState !=STATE_MENU_DISPLAY)
-		{
-			GPIOA->ODR = GPIOA->ODR & (!0b1<<8);
-		}
+		setLCDState(STATE_LCD_DISPLAY);
 		state = newState;
 	}
 }
@@ -27,6 +24,7 @@ void setOutType(uint8_t newOutType)
 {
 	if (newOutType > 0 && newOutType <=3)
 		{
+			setLCDState(STATE_LCD_DISPLAY);
 			outputType = newOutType;
 		}
 }
@@ -35,6 +33,7 @@ void setOutState(uint8_t newOutState)
 {
 	if (newOutState >= 0 && newOutState <=1)
 	{
+		setLCDState(STATE_LCD_DISPLAY);
 		outputState = newOutState;
 	}
 }
@@ -43,7 +42,29 @@ void setMeasParam(uint8_t newMeasParam)
 {
 	if (newMeasParam >= 1 && newMeasParam <=6)
 	{
+		setLCDState(STATE_LCD_DISPLAY);
 		measurementParameter = newMeasParam;
+	}
+}
+
+void setLCDState(uint8_t newLCDState)
+{
+	if(newLCDState >= 1 &&  newLCDState <=4)
+	{
+		if(newLCDState != STATE_LCD_MENU)
+		{
+			GPIOA->ODR = GPIOA->ODR & (!0b1<<8); // Turn off LED as no longer in Menu mode
+		}
+
+		if(newLCDState == STATE_LCD_MENU){
+			menuView();
+		}
+
+		if(newLCDState == STATE_LCD_DISPLAY){
+			displayView();
+		}
+
+		LCDState = newLCDState;
 	}
 }
 

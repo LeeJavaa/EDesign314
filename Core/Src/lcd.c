@@ -42,6 +42,7 @@ void LCD_CMD(unsigned char CMD){
 	HAL_Delay(1);
 	// EN=0;
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+	HAL_Delay(1);
 }
 
 void LCD_init(){
@@ -95,6 +96,7 @@ void LCD_Clear(){
 	// Clear Display: 00000001
 	LCD_CMD(0);
 	LCD_CMD(1);
+	HAL_Delay(3);
 }
 
 void LCD_Set_Cursor(unsigned char r, unsigned char c)
@@ -120,18 +122,39 @@ void LCD_Set_Cursor(unsigned char r, unsigned char c)
 	}
 }
 
-void LCD_SR()
+//void LCD_SR()
+//{
+//	// Shift display right 00011100
+//	LCD_CMD(0x01);
+//	LCD_CMD(0x0C);
+//}
+//
+//void LCD_SL()
+//{
+//	// Shift display left 00011000
+//	LCD_CMD(0x01);
+//	LCD_CMD(0x08);
+//}
+
+void menuView()
 {
-	// Shift display right 00011100
-	LCD_CMD(0x01);
-	LCD_CMD(0x0C);
+	LCD_Clear();
+	LCD_Write_String("Menu Mode");
 }
 
-void LCD_SL()
+void displayView()
 {
-	// Shift display left 00011000
-	LCD_CMD(0x01);
-	LCD_CMD(0x08);
+	LCD_Clear();
+	LCD_Write_String("Measurement");
+	LCD_Set_Cursor(2,1);
+	LCD_Write_String("Output");
+}
+
+void menuInit()
+{
+	setLCDState(STATE_LCD_MENU);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	menuView();
 }
 
 

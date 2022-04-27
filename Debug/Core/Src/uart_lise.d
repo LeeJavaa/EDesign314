@@ -33,8 +33,8 @@ Core/Src/uart_lise.o: ../Core/Src/uart_lise.c ../Core/Inc/uart_lise.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim_ex.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h \
- ../Core/Inc/stateManagement.h ../Core/Inc/measurements.h \
- ../Core/Inc/lcd.h
+ ../Core/Inc/stateManagement.h ../Core/Inc/lcd.h \
+ ../Core/Inc/measurements.h ../Core/Inc/output.h
 
 ../Core/Inc/uart_lise.h:
 
@@ -110,6 +110,8 @@ Core/Src/uart_lise.o: ../Core/Src/uart_lise.c ../Core/Inc/uart_lise.h \
 
 ../Core/Inc/stateManagement.h:
 
+../Core/Inc/lcd.h:
+
 ../Core/Inc/measurements.h:
 
-../Core/Inc/lcd.h:
+../Core/Inc/output.h:
