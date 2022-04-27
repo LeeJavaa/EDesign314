@@ -60,7 +60,7 @@ void LCD_init(){
 	LCD_CMD(0x00);
 	LCD_CMD(0x0F); // On Display, On Cursor, Cursor blink
 	LCD_CMD(0x00);
-	LCD_CMD(0x07); // On shift
+	LCD_CMD(0x06); // Increment
 }
 
 void LCD_Write_Char(char Data){
@@ -82,7 +82,6 @@ void LCD_Write_Char(char Data){
 	HAL_Delay(1);
 	// EN = 0
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-	HAL_Delay(1);
 }
 
 void LCD_Write_String(char *str){
@@ -96,6 +95,43 @@ void LCD_Clear(){
 	// Clear Display: 00000001
 	LCD_CMD(0);
 	LCD_CMD(1);
+}
+
+void LCD_Set_Cursor(unsigned char r, unsigned char c)
+{
+	// 0x80 is the base
+	// r = row, c = column
+	unsigned char Temp, Low4, High4;
+	if(r==1)
+	{
+		Temp = 0x80 + c - 1;
+		High4 = Temp >> 4;
+		Low4 = Temp & 0x0F;
+		LCD_CMD(High4);
+		LCD_CMD(Low4);
+	}
+	if(r==2)
+	{
+		Temp = 0xC0 + c - 1;
+		High4 = Temp >> 4;
+		Low4 = Temp & 0x0F;
+		LCD_CMD(High4);
+		LCD_CMD(Low4);
+	}
+}
+
+void LCD_SR()
+{
+	// Shift display right 00011100
+	LCD_CMD(0x01);
+	LCD_CMD(0x0C);
+}
+
+void LCD_SL()
+{
+	// Shift display left 00011000
+	LCD_CMD(0x01);
+	LCD_CMD(0x08);
 }
 
 

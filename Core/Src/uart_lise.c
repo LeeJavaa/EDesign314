@@ -20,6 +20,7 @@ void process_input(){
 	  //process input message and set appropriate modes
 	if(input_message[2] == '$'){
 		// "Set Measure Mode"
+//		LCD_Write_String("Set Measurement Mode");
 		if((input_message[4]=='D')&&(input_message[5]=='V')){
 			// Set measurement to DC Voltage
 			mes_mode[0]= 'D';
@@ -86,6 +87,19 @@ void process_input(){
 
 	}
 
+	if (input_message[2] == '#')
+	{
+		// Display on LCD
+		if(input_message[4] == '0')
+		{
+			// Display data
+			;
+		} else{
+			// Execute commands
+			;
+		}
+	}
+
 
 }
 
@@ -138,6 +152,7 @@ void sendMeasure(){
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
 	if (rxData[0] != 10){
+		// If the received byte is not equal to #0x0A (Line feed)
 		input_message[input_length] = rxData[0];
 		input_length ++ ;
 	} else{

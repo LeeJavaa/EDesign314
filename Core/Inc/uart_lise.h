@@ -9,6 +9,7 @@
 #include "main.h"
 #include "stateManagement.h"
 #include "measurements.h"
+#include "lcd.h"
 
 extern UART_HandleTypeDef huart2;
 

@@ -152,7 +152,9 @@ int main(void)
   initState();
   LCD_init();
   LCD_Clear();
-  LCD_Write_String("Hello World\0");
+  LCD_Write_String("Daanyaal fuck you\0");
+  LCD_Set_Cursor(2, 1);
+  LCD_Write_String("Cammy <3");
   /* USER CODE END 2 */
 
   /* Infinite loop */
