@@ -9,6 +9,7 @@
 #include "stateManagement.h"
 #include <stdlib.h>
 #include "math.h"
+#include "lcd.h" // Debug purposes
 
 #define SIN_BUFFER_SIZE 10000
 #define DC_BUFFER_SIZE 100
@@ -19,25 +20,30 @@ extern DMA_HandleTypeDef hdma_dac1_ch1;
 uint32_t sinBuffer[SIN_BUFFER_SIZE];
 uint32_t dc_val[DC_BUFFER_SIZE];
 
-uint16_t sinBufferChanged;
-uint16_t sinOutputOn;
-uint16_t offsetChanged;
-uint16_t dcOutputOn;
+uint8_t sinBufferChanged;
+uint8_t sinOutputOn;
+uint8_t offsetChanged;
+uint8_t dcOutputOn;
+uint8_t changedParam;
 
-uint16_t dcOffset;
-uint16_t acOffset;
-uint16_t amplitude;
-uint16_t frequency;
-uint32_t outputDCOffset;
-uint32_t outputACOffset;
-uint32_t outputAmplitude;
-uint32_t outputFrequency;
+uint8_t acOffsetChanged;
+uint8_t amplitudeChanged;
+uint8_t frequencyChanged;
 
-int16_t getValue(char *stringValue);
-int32_t calibrate(uint32_t sample);
-void updateOffset(uint16_t newOffset);
-void updateAmplitude(uint16_t newAmplitude);
-void updateFrequency(uint16_t newFrequency);
+float dcOffset;
+float acOffset;
+float amplitude;
+float frequency;
+float outputDCOffset;
+float outputACOffset;
+float outputAmplitude;
+float outputFrequency;
+
+float getValue(char *stringValue);
+float calibrate(float sample);
+void updateOffset(float newOffset);
+void updateAmplitude(float newAmplitude);
+void updateFrequency(float newFrequency);
 void dcOut();
 void calcSin();
 void acOut();

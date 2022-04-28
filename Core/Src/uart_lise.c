@@ -137,21 +137,18 @@ void process_input(){
 		} else if(input_message[4] == 'a'){
 			// Set output amplitude
 			strncpy((char*) paramValue, (char*) input_message + 6, 4);
-			uint16_t newAmp = getValue(paramValue);
+			float newAmp = getValue(paramValue);
 			updateAmplitude(newAmp);
-			HAL_UART_Transmit(&huart2, paramValue, 4, 50);
 		} else if(input_message[4] == 'o'){
 			// Set output offset
 			strncpy((char*) paramValue, (char*) input_message + 6, 4);
-			uint16_t newOff = getValue(paramValue);
+			float newOff = getValue(paramValue);
 			updateOffset(newOff);
-			HAL_UART_Transmit(&huart2, paramValue, 4, 50);
 		} else if(input_message[4] == 'f'){
 			// Set output frequency
 			strncpy((char*) paramValue, (char*) input_message + 6, 4);
-			uint16_t newFreq = getValue(paramValue);
+			float newFreq = getValue(paramValue);
 			updateFrequency(newFreq);
-			HAL_UART_Transmit(&huart2, paramValue, 4, 50);
 		}
 	}
 

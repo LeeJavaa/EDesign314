@@ -1,8 +1,8 @@
-output.c:29:9:getValue	24	static
-output.c:36:9:calibrate	32	static
-output.c:42:6:updateOffset	16	static
-output.c:52:6:updateAmplitude	16	static
-output.c:57:6:updateFrequency	16	static
-output.c:62:6:dcOut	40	static
-output.c:84:6:calcSin	24	static
-output.c:115:6:acOut	16	static
+output.c:35:7:getValue	24	static
+output.c:42:7:calibrate	24	static
+output.c:48:6:updateOffset	16	static
+output.c:59:6:updateAmplitude	16	static
+output.c:65:6:updateFrequency	16	static
+output.c:71:6:dcOut	32	static
+output.c:97:6:calcSin	32	static
+output.c:131:6:acOut	16	static
