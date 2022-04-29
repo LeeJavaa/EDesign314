@@ -121,7 +121,7 @@ void calcSin() {
 
 	if(changedParam == 1){
 		for (int i = 0; i < SIN_BUFFER_SIZE; i++){
-			sinBuffer[i] = (uint32_t) calibrate((outputAmplitude)*((sin(i*2*PI/(10000/outputFrequency)))) + outputACOffset);
+			sinBuffer[i] = (uint32_t) calibrate((outputAmplitude)*((sin(i*2*PI/(100000/outputFrequency)))) + outputACOffset);
 		}
 		sinBufferChanged = 1;
 		changedParam = 0 ;

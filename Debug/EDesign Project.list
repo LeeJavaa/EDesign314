@@ -2337,9 +2337,9 @@ static void MX_TIM4_Init(void)
  80013ee:	4b1a      	ldr	r3, [pc, #104]	; (8001458 <MX_TIM4_Init+0x94>)
  80013f0:	2200      	movs	r2, #0
  80013f2:	609a      	str	r2, [r3, #8]
-  htim4.Init.Period = 100-1;
+  htim4.Init.Period = 10-1;
  80013f4:	4b18      	ldr	r3, [pc, #96]	; (8001458 <MX_TIM4_Init+0x94>)
- 80013f6:	2263      	movs	r2, #99	; 0x63
+ 80013f6:	2209      	movs	r2, #9
  80013f8:	60da      	str	r2, [r3, #12]
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
  80013fa:	4b17      	ldr	r3, [pc, #92]	; (8001458 <MX_TIM4_Init+0x94>)
@@ -3731,7 +3731,7 @@ void calcSin() {
  8001df0:	2300      	movs	r3, #0
  8001df2:	607b      	str	r3, [r7, #4]
  8001df4:	e05c      	b.n	8001eb0 <calcSin+0x178>
-			sinBuffer[i] = (uint32_t) calibrate((outputAmplitude)*((sin(i*2*PI/(10000/outputFrequency)))) + outputACOffset);
+			sinBuffer[i] = (uint32_t) calibrate((outputAmplitude)*((sin(i*2*PI/(100000/outputFrequency)))) + outputACOffset);
  8001df6:	4b43      	ldr	r3, [pc, #268]	; (8001f04 <calcSin+0x1cc>)
  8001df8:	681b      	ldr	r3, [r3, #0]
  8001dfa:	4618      	mov	r0, r3
@@ -3837,7 +3837,7 @@ void calcSin() {
  8001f08:	20000003 	.word	0x20000003
  8001f0c:	20000010 	.word	0x20000010
  8001f10:	2000023c 	.word	0x2000023c
- 8001f14:	461c4000 	.word	0x461c4000
+ 8001f14:	47c35000 	.word	0x47c35000
  8001f18:	20000254 	.word	0x20000254
  8001f1c:	2000022d 	.word	0x2000022d
 
