@@ -30,6 +30,7 @@ uint8_t input_length;
 uint8_t send_status;
 uint8_t send_measure;
 uint8_t input_complete;
+uint8_t changeLine;
 
 // Measurement Values
 uint16_t measAmplitude;

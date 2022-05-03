@@ -16,6 +16,8 @@ uint16_t measAmplitude = 0;
 uint16_t measOffset = 0;
 uint16_t measFrequency = 0;
 
+uint8_t changeLine = 0;
+
 void process_input(){
 	  //process input message and set appropriate modes
 	if(input_message[2] == '$'){
@@ -94,7 +96,12 @@ void process_input(){
 			// Display characters
 			if(LCDState != STATE_LCD_CHAR)
 			{
-				LCD_Clear(); // Clear LCD before writing characters
+				if(changeLine){
+					LCD_Set_Cursor(2,1);
+					changeLine = 0;
+				}else{
+					LCD_Clear(); // Clear LCD before writing characters
+				}
 				setLCDState(STATE_LCD_CHAR);
 			}
 			LCD_Write_Char(input_message[6]);
@@ -110,6 +117,10 @@ void process_input(){
 
 			LCD_CMD((High4>>4)); // Send the first 4 bits to the LCD
 			LCD_CMD(Low4); // Send the second 4 bits to the LCD
+
+			if(Low4 == 0x0 && (High4 >> 4) == 0xC){
+				changeLine = 1;
+			}
 
 			HAL_Delay(3); // Maximum delay needed for the LCD commands (Clear Screen -> 2.16ms at fosc = 190KHz)
 		}
